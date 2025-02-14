@@ -1,7 +1,7 @@
 import re
 from collections.abc import Generator
 from contextlib import contextmanager
-from typing import Any
+from typing import Any, List, Tuple, Optional
 
 import clickhouse_connect
 import structlog
@@ -58,14 +58,14 @@ class EventLogClient:
         except DatabaseError as e:
             logger.error('unable to insert data to clickhouse', error=str(e))
 
-    def query(self, query: str) -> Any:  # noqa: ANN401
+    def query(self, query: str) -> Optional[List[Tuple[Any, ...]]]:
         logger.debug('executing clickhouse query', query=query)
 
         try:
             return self._client.query(query).result_rows
         except DatabaseError as e:
             logger.error('failed to execute clickhouse query', error=str(e))
-            return
+            return None
 
     def _convert_data(self, data: list[Model]) -> list[tuple[Any]]:
         return [
