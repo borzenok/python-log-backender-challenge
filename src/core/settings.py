@@ -28,6 +28,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # third party apps
+    'rest_framework',
+    'drf_spectacular',  # для OpenAPI документации
+
     # project apps
     'users',
 ]
@@ -184,3 +188,27 @@ if SENTRY_SETTINGS.get("dsn") and not DEBUG:
         ],
         default_integrations=False,
     )
+
+AUTH_USER_MODEL = 'users.User'
+
+# DRF settings
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 20,
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+# Spectacular settings
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Your API',
+    'DESCRIPTION': 'Your project description',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+}
